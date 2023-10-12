@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "ngrx-income": {
+      "hosting": {
+        "ngrx-income": [
+          "ngrx-income"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "hosting": [
+      {
+        "target": "ngrx-income",
+        "public": "dist/ngrx-income",
+        "ignore": [
+          "firebase.json",
+          "**/.*",
+          "**/node_modules/**"
+        ],
+        "rewrites": [
+          {
+            "source": "**",
+            "destination": "/index.html"
+          }
+        ]
+      }
+    ]
+  }
