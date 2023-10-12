@@ -7,6 +7,14 @@ export class AuthService {
 
   auth: Auth = inject(Auth);
 
+  initAuthListener() {
+    this.auth.onAuthStateChanged( user => {
+      console.log(user?.email);
+      console.log(user?.uid);
+      console.log(user);
+    })
+  }
+
   crearUsuario(nombre: string, email: string, password: string) {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
