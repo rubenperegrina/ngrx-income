@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'ni-login',
@@ -26,11 +27,27 @@ export default class LoginComponent {
 
   loginUsuario() {
     if (this.loginForm.invalid) return;
+
+    Swal.fire({
+      title: 'Espere por favor...',
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     const { correo, password } = this.loginForm.value;
     this.autService.loginUsuario(correo, password).then(
       credentials => {
+        Swal.close();
         this.router.navigate(['/']);
       })
-      .catch(err => console.error(err));;
+      .catch(err => {
+        Swal.fire({
+          title: 'Oops...',
+          text: err.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
+      })
   }
 }

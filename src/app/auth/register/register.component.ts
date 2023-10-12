@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'ni-register',
@@ -27,11 +28,27 @@ export default class RegisterComponent implements OnInit {
 
   crearUsuario() {
     if (this.registerForm.invalid) return;
+
+    Swal.fire({
+      title: 'Espere por favor...',
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     const { nombre, correo, password } = this.registerForm.value;
     this.autService.crearUsuario(nombre, correo, password).then(
       credentials => {
+        Swal.close();
         this.router.navigate(['/']);
       })
-      .catch(err => console.error(err));;
+      .catch(err => {
+        Swal.fire({
+          title: 'Oops...',
+          text: err.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
+      });
   }
 }
