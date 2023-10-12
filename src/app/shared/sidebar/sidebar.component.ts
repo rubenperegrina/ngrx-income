@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'ni-sidebar',
@@ -11,4 +12,12 @@ import { RouterLink } from '@angular/router';
 })
 export default class SidebarComponent {
 
+  auth: AuthService = inject(AuthService);
+  router: Router = inject(Router);
+
+  logout() {
+    this.auth.logout().then(() => {
+      this.router.navigate(['/login']);
+    });
+  }
 }
