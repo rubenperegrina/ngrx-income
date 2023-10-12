@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'ni-register',
@@ -13,6 +14,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 export default class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   fb = inject(FormBuilder);
+  autService = inject(AuthService);
+  router = inject(Router);
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
@@ -23,8 +26,13 @@ export default class RegisterComponent implements OnInit {
   }
 
   crearUsuario() {
-    console.log(this.registerForm)
-    console.log(this.registerForm.valid)
-    console.log(this.registerForm.value)
+    if (this.registerForm.invalid) return;
+    const { nombre, correo, password } = this.registerForm.value;
+    this.autService.crearUsuario(nombre, correo, password).then(
+      credentials => {
+        console.log(credentials);
+        this.router.navigate(['/']);
+      })
+      .catch(err => console.error(err));;
   }
 }
