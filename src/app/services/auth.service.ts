@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Observable, map } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -8,9 +9,7 @@ export class AuthService {
   auth: Auth = inject(Auth);
 
   initAuthListener() {
-    this.auth.onAuthStateChanged( user => {
-      console.log(user?.email);
-      console.log(user?.uid);
+    this.auth.onAuthStateChanged(user => {
       console.log(user);
     })
   }
@@ -25,5 +24,12 @@ export class AuthService {
 
   logout() {
     return this.auth.signOut();
+  }
+
+  isAuth() {
+    return new Observable((subscriber) => {
+      const unsubscribe = this.auth.onAuthStateChanged(subscriber);
+      return { unsubscribe };
+    }).pipe(map((fUser) => fUser != null));
   }
 }
