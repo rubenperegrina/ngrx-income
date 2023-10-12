@@ -21,7 +21,7 @@ export default class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       nombre: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
@@ -30,7 +30,6 @@ export default class RegisterComponent implements OnInit {
     const { nombre, correo, password } = this.registerForm.value;
     this.autService.crearUsuario(nombre, correo, password).then(
       credentials => {
-        console.log(credentials);
         this.router.navigate(['/']);
       })
       .catch(err => console.error(err));;
