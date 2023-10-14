@@ -1,12 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Observable, map } from 'rxjs';
+import { User } from '../models/user.model';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Firestore } from '@angular/fire/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
 
   auth: Auth = inject(Auth);
+  firestore: Firestore = inject(Firestore);
 
   initAuthListener() {
     this.auth.onAuthStateChanged(user => {
@@ -14,8 +18,14 @@ export class AuthService {
     })
   }
 
-  crearUsuario(nombre: string, email: string, password: string) {
-    return createUserWithEmailAndPassword(this.auth, email, password);
+  crearUsuario(name: string, email: string, password: string) {
+    return createUserWithEmailAndPassword(this.auth, email, password)
+      .then(({ user }) => {
+        const newUser: User = { name, email: user.email!, uid: user.uid };
+        const collectionRef = collection(this.firestore, `${user.uid}`);
+        const documentRef = doc(collectionRef, 'users');
+        setDoc(documentRef, newUser);
+      })
   }
 
   loginUsuario(email: string, password: string) {
@@ -23,7 +33,7 @@ export class AuthService {
   }
 
   logout() {
-    return this.auth.signOut();
+    return signOut(this.auth);
   }
 
   isAuth() {
